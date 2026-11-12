@@ -33,7 +33,7 @@ function Page() {
   return (
     <PublicLayout><Container>
       <PageHeader eyebrow={`${comp.format} · ${comp.season}`} title={comp.name} demo actions={<StatusPill status={comp.status} />} />
-      <Tabs defaultValue={tabs[0]}>
+      <Tabs defaultValue="Classificação">
         <TabsList className="h-auto flex-wrap justify-start">{tabs.map((t) => <TabsTrigger key={t} value={t}>{t}</TabsTrigger>)}</TabsList>
         <TabsContent value="Classificação"><Panel><StandingsTable /></Panel></TabsContent>
         <TabsContent value="Participantes"><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{demoClubs.map((c) => <Panel key={c.id}><div className="flex items-center gap-3"><Crest club={c} /><span className="font-medium">{c.name}</span></div></Panel>)}</div></TabsContent>

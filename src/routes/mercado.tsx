@@ -34,7 +34,7 @@ function Page() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Volume negociado" value={coins(537000)} icon={Coins} tone="gold" hint="Exemplo" />
         <StatCard label="Transferências" value={4} icon={ArrowLeftRight} hint="Exemplo" />
-        <StatCard label="Maior alta" value={`+${byChange[0].change.toFixed(1)}%`} icon={TrendingUp} tone="success" hint={byChange[0].name} />
+        <StatCard label="Maior alta" value={`+${byChange[0]!.change.toFixed(1)}%`} icon={TrendingUp} tone="success" hint={byChange[0]!.name} />
         <StatCard label="Maior queda" value={`${byChange.at(-1)!.change.toFixed(1)}%`} icon={TrendingDown} hint={byChange.at(-1)!.name} />
       </div>
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
