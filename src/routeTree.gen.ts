@@ -10,33 +10,114 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ClubesRouteImport } from './routes/clubes'
+import { Route as CompeticoesRouteImport } from './routes/competicoes'
+import { Route as JogadoresRouteImport } from './routes/jogadores'
+import { Route as MercadoRouteImport } from './routes/mercado'
+import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as CompeticoesSlugRouteImport } from './routes/competicoes.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClubesRoute = ClubesRouteImport.update({
+  id: '/clubes',
+  path: '/clubes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompeticoesRoute = CompeticoesRouteImport.update({
+  id: '/competicoes',
+  path: '/competicoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JogadoresRoute = JogadoresRouteImport.update({
+  id: '/jogadores',
+  path: '/jogadores',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MercadoRoute = MercadoRouteImport.update({
+  id: '/mercado',
+  path: '/mercado',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompeticoesSlugRoute = CompeticoesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => CompeticoesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/clubes': typeof ClubesRoute
+  '/competicoes': typeof CompeticoesRouteWithChildren
+  '/jogadores': typeof JogadoresRoute
+  '/mercado': typeof MercadoRoute
+  '/sobre': typeof SobreRoute
+  '/competicoes/$slug': typeof CompeticoesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/clubes': typeof ClubesRoute
+  '/competicoes': typeof CompeticoesRouteWithChildren
+  '/jogadores': typeof JogadoresRoute
+  '/mercado': typeof MercadoRoute
+  '/sobre': typeof SobreRoute
+  '/competicoes/$slug': typeof CompeticoesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/clubes': typeof ClubesRoute
+  '/competicoes': typeof CompeticoesRouteWithChildren
+  '/jogadores': typeof JogadoresRoute
+  '/mercado': typeof MercadoRoute
+  '/sobre': typeof SobreRoute
+  '/competicoes/$slug': typeof CompeticoesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/clubes'
+    | '/competicoes'
+    | '/jogadores'
+    | '/mercado'
+    | '/sobre'
+    | '/competicoes/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/clubes'
+    | '/competicoes'
+    | '/jogadores'
+    | '/mercado'
+    | '/sobre'
+    | '/competicoes/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/clubes'
+    | '/competicoes'
+    | '/jogadores'
+    | '/mercado'
+    | '/sobre'
+    | '/competicoes/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ClubesRoute: typeof ClubesRoute
+  CompeticoesRoute: typeof CompeticoesRouteWithChildren
+  JogadoresRoute: typeof JogadoresRoute
+  MercadoRoute: typeof MercadoRoute
+  SobreRoute: typeof SobreRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +129,70 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/clubes': {
+      id: '/clubes'
+      path: '/clubes'
+      fullPath: '/clubes'
+      preLoaderRoute: typeof ClubesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/competicoes': {
+      id: '/competicoes'
+      path: '/competicoes'
+      fullPath: '/competicoes'
+      preLoaderRoute: typeof CompeticoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jogadores': {
+      id: '/jogadores'
+      path: '/jogadores'
+      fullPath: '/jogadores'
+      preLoaderRoute: typeof JogadoresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mercado': {
+      id: '/mercado'
+      path: '/mercado'
+      fullPath: '/mercado'
+      preLoaderRoute: typeof MercadoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/competicoes/$slug': {
+      id: '/competicoes/$slug'
+      path: '/$slug'
+      fullPath: '/competicoes/$slug'
+      preLoaderRoute: typeof CompeticoesSlugRouteImport
+      parentRoute: typeof CompeticoesRoute
+    }
   }
 }
 
+interface CompeticoesRouteChildren {
+  CompeticoesSlugRoute: typeof CompeticoesSlugRoute
+}
+
+const CompeticoesRouteChildren: CompeticoesRouteChildren = {
+  CompeticoesSlugRoute: CompeticoesSlugRoute,
+}
+
+const CompeticoesRouteWithChildren = CompeticoesRoute._addFileChildren(
+  CompeticoesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ClubesRoute: ClubesRoute,
+  CompeticoesRoute: CompeticoesRouteWithChildren,
+  JogadoresRoute: JogadoresRoute,
+  MercadoRoute: MercadoRoute,
+  SobreRoute: SobreRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
