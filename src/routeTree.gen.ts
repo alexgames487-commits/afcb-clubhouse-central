@@ -10,16 +10,37 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CalendarioRouteImport } from './routes/calendario'
 import { Route as ClubesRouteImport } from './routes/clubes'
 import { Route as CompeticoesRouteImport } from './routes/competicoes'
 import { Route as JogadoresRouteImport } from './routes/jogadores'
 import { Route as MercadoRouteImport } from './routes/mercado'
+import { Route as NoticiasRouteImport } from './routes/noticias'
+import { Route as RankingsRouteImport } from './routes/rankings'
+import { Route as RegulamentosRouteImport } from './routes/regulamentos'
 import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
 import { Route as CompeticoesSlugRouteImport } from './routes/competicoes.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendarioRoute = CalendarioRouteImport.update({
+  id: '/calendario',
+  path: '/calendario',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ClubesRoute = ClubesRouteImport.update({
@@ -42,10 +63,30 @@ const MercadoRoute = MercadoRouteImport.update({
   path: '/mercado',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NoticiasRoute = NoticiasRouteImport.update({
+  id: '/noticias',
+  path: '/noticias',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RankingsRoute = RankingsRouteImport.update({
+  id: '/rankings',
+  path: '/rankings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegulamentosRoute = RegulamentosRouteImport.update({
+  id: '/regulamentos',
+  path: '/regulamentos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedPainelRoute = AuthenticatedPainelRouteImport.update({
+  id: '/painel',
+  path: '/painel',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const CompeticoesSlugRoute = CompeticoesSlugRouteImport.update({
   id: '/$slug',
@@ -55,68 +96,112 @@ const CompeticoesSlugRoute = CompeticoesSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/calendario': typeof CalendarioRoute
   '/clubes': typeof ClubesRoute
   '/competicoes': typeof CompeticoesRouteWithChildren
   '/jogadores': typeof JogadoresRoute
   '/mercado': typeof MercadoRoute
+  '/noticias': typeof NoticiasRoute
+  '/rankings': typeof RankingsRoute
+  '/regulamentos': typeof RegulamentosRoute
   '/sobre': typeof SobreRoute
+  '/painel': typeof AuthenticatedPainelRoute
   '/competicoes/$slug': typeof CompeticoesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/calendario': typeof CalendarioRoute
   '/clubes': typeof ClubesRoute
   '/competicoes': typeof CompeticoesRouteWithChildren
   '/jogadores': typeof JogadoresRoute
   '/mercado': typeof MercadoRoute
+  '/noticias': typeof NoticiasRoute
+  '/rankings': typeof RankingsRoute
+  '/regulamentos': typeof RegulamentosRoute
   '/sobre': typeof SobreRoute
+  '/painel': typeof AuthenticatedPainelRoute
   '/competicoes/$slug': typeof CompeticoesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/calendario': typeof CalendarioRoute
   '/clubes': typeof ClubesRoute
   '/competicoes': typeof CompeticoesRouteWithChildren
   '/jogadores': typeof JogadoresRoute
   '/mercado': typeof MercadoRoute
+  '/noticias': typeof NoticiasRoute
+  '/rankings': typeof RankingsRoute
+  '/regulamentos': typeof RegulamentosRoute
   '/sobre': typeof SobreRoute
+  '/_authenticated/painel': typeof AuthenticatedPainelRoute
   '/competicoes/$slug': typeof CompeticoesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
+    | '/calendario'
     | '/clubes'
     | '/competicoes'
     | '/jogadores'
     | '/mercado'
+    | '/noticias'
+    | '/rankings'
+    | '/regulamentos'
     | '/sobre'
+    | '/painel'
     | '/competicoes/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
+    | '/calendario'
     | '/clubes'
     | '/competicoes'
     | '/jogadores'
     | '/mercado'
+    | '/noticias'
+    | '/rankings'
+    | '/regulamentos'
     | '/sobre'
+    | '/painel'
     | '/competicoes/$slug'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/calendario'
     | '/clubes'
     | '/competicoes'
     | '/jogadores'
     | '/mercado'
+    | '/noticias'
+    | '/rankings'
+    | '/regulamentos'
     | '/sobre'
+    | '/_authenticated/painel'
     | '/competicoes/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  CalendarioRoute: typeof CalendarioRoute
   ClubesRoute: typeof ClubesRoute
   CompeticoesRoute: typeof CompeticoesRouteWithChildren
   JogadoresRoute: typeof JogadoresRoute
   MercadoRoute: typeof MercadoRoute
+  NoticiasRoute: typeof NoticiasRoute
+  RankingsRoute: typeof RankingsRoute
+  RegulamentosRoute: typeof RegulamentosRoute
   SobreRoute: typeof SobreRoute
 }
 
@@ -127,6 +212,27 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendario': {
+      id: '/calendario'
+      path: '/calendario'
+      fullPath: '/calendario'
+      preLoaderRoute: typeof CalendarioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/clubes': {
@@ -157,12 +263,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MercadoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/noticias': {
+      id: '/noticias'
+      path: '/noticias'
+      fullPath: '/noticias'
+      preLoaderRoute: typeof NoticiasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rankings': {
+      id: '/rankings'
+      path: '/rankings'
+      fullPath: '/rankings'
+      preLoaderRoute: typeof RankingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/regulamentos': {
+      id: '/regulamentos'
+      path: '/regulamentos'
+      fullPath: '/regulamentos'
+      preLoaderRoute: typeof RegulamentosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sobre': {
       id: '/sobre'
       path: '/sobre'
       fullPath: '/sobre'
       preLoaderRoute: typeof SobreRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/painel': {
+      id: '/_authenticated/painel'
+      path: '/painel'
+      fullPath: '/painel'
+      preLoaderRoute: typeof AuthenticatedPainelRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/competicoes/$slug': {
       id: '/competicoes/$slug'
@@ -173,6 +307,17 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedPainelRoute: typeof AuthenticatedPainelRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedPainelRoute: AuthenticatedPainelRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface CompeticoesRouteChildren {
   CompeticoesSlugRoute: typeof CompeticoesSlugRoute
@@ -188,10 +333,16 @@ const CompeticoesRouteWithChildren = CompeticoesRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  CalendarioRoute: CalendarioRoute,
   ClubesRoute: ClubesRoute,
   CompeticoesRoute: CompeticoesRouteWithChildren,
   JogadoresRoute: JogadoresRoute,
   MercadoRoute: MercadoRoute,
+  NoticiasRoute: NoticiasRoute,
+  RankingsRoute: RankingsRoute,
+  RegulamentosRoute: RegulamentosRoute,
   SobreRoute: SobreRoute,
 }
 export const routeTree = rootRouteImport
