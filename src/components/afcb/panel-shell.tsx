@@ -33,7 +33,7 @@ export function PanelShell({ label, items, children }: { label: string; items: N
                   {items.map((it) => (
                     <SidebarMenuItem key={it.to}>
                       <SidebarMenuButton asChild isActive={path === it.to} tooltip={it.title}>
-                        <a href={it.to} onClick={(e) => { e.preventDefault(); navigate({ to: it.to }); }}>
+                        <a href={it.to} onClick={(e) => { e.preventDefault(); navigate({ href: it.to }); }}>
                           <it.icon className="h-4 w-4" /><span>{it.title}</span>
                         </a>
                       </SidebarMenuButton>
