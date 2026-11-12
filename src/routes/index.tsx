@@ -2,8 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Trophy, Shield, Users, Coins, CalendarDays, ScrollText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PublicLayout, Container } from "@/components/afcb/public-layout";
-import { Crest, DemoBadge, Panel, StatusPill, Trend } from "@/components/afcb/ui";
-import { demoClubs, demoCompetitions, demoNews, demoPlayers, demoStandings, coins, clubById } from "@/lib/demo-data";
+import { DemoBadge, Panel, StatusPill, Trend } from "@/components/afcb/ui";
+import { demoClubs, demoCompetitions, demoNews, demoPlayers, coins, clubById } from "@/lib/demo-data";
 import { StandingsTable } from "@/components/afcb/tables";
 import hero from "@/assets/hero-stadium.jpg";
 
