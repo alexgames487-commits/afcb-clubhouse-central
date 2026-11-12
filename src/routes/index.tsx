@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { PublicLayout, Container } from "@/components/afcb/public-layout";
 import { Crest, DemoBadge, Panel, StatusPill, Trend } from "@/components/afcb/ui";
 import { demoClubs, demoCompetitions, demoNews, demoPlayers, demoStandings, coins, clubById } from "@/lib/demo-data";
+import { StandingsTable } from "@/components/afcb/tables";
 import hero from "@/assets/hero-stadium.jpg";
 
 export const Route = createFileRoute("/")({
@@ -109,21 +110,3 @@ function Home() {
   );
 }
 
-export function StandingsTable() {
-  return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead><tr className="text-left text-xs uppercase tracking-wider text-muted-foreground"><th className="py-2 pr-2">#</th><th>Clube</th><th className="text-center">P</th><th className="text-center">J</th><th className="text-center">V</th><th className="text-center">E</th><th className="text-center">D</th><th className="text-center">SG</th></tr></thead>
-        <tbody>
-          {demoStandings.map((r, i) => (
-            <tr key={r.club.id} className="border-t border-border">
-              <td className="py-2.5 pr-2"><span className={i < 2 ? "font-bold text-primary" : "text-muted-foreground"}>{i + 1}</span></td>
-              <td><div className="flex items-center gap-2"><Crest club={r.club} size="sm" /><span className="truncate">{r.club.name}</span></div></td>
-              <td className="text-center font-bold">{r.p}</td><td className="text-center">{r.j}</td><td className="text-center">{r.v}</td><td className="text-center">{r.e}</td><td className="text-center">{r.d}</td><td className="text-center">{r.gp - r.gc}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
