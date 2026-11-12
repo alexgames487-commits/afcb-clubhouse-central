@@ -14,16 +14,212 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clubs: {
+        Row: {
+          coins: number
+          created_at: string
+          crest_url: string | null
+          id: string
+          manager_id: string | null
+          name: string
+          short_name: string | null
+        }
+        Insert: {
+          coins?: number
+          created_at?: string
+          crest_url?: string | null
+          id?: string
+          manager_id?: string | null
+          name: string
+          short_name?: string | null
+        }
+        Update: {
+          coins?: number
+          created_at?: string
+          crest_url?: string | null
+          id?: string
+          manager_id?: string | null
+          name?: string
+          short_name?: string | null
+        }
+        Relationships: []
+      }
+      competition_clubs: {
+        Row: {
+          club_id: string
+          competition_id: string
+        }
+        Insert: {
+          club_id: string
+          competition_id: string
+        }
+        Update: {
+          club_id?: string
+          competition_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_clubs_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_clubs_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competitions: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          season: string | null
+          slug: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          season?: string | null
+          slug: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          season?: string | null
+          slug?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      news: {
+        Row: {
+          body: string | null
+          id: string
+          published_at: string
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          id?: string
+          published_at?: string
+          title: string
+        }
+        Update: {
+          body?: string | null
+          id?: string
+          published_at?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      players: {
+        Row: {
+          club_id: string | null
+          created_at: string
+          id: string
+          market_value: number
+          platform_id: string | null
+          position: string | null
+          sport_name: string
+          user_id: string | null
+        }
+        Insert: {
+          club_id?: string | null
+          created_at?: string
+          id?: string
+          market_value?: number
+          platform_id?: string | null
+          position?: string | null
+          sport_name: string
+          user_id?: string | null
+        }
+        Update: {
+          club_id?: string | null
+          created_at?: string
+          id?: string
+          market_value?: number
+          platform_id?: string | null
+          position?: string | null
+          sport_name?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "players_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          platform_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          platform_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          platform_id?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "superadmin" | "club_manager" | "player"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +346,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["superadmin", "club_manager", "player"],
+    },
   },
 } as const
