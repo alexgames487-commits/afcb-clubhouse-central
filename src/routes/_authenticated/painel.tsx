@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { LayoutDashboard } from "lucide-react";
 import { PanelShell } from "@/components/afcb/panel-shell";
-import { PageHeader, StatCard } from "@/components/afcb/ui";
+import { PageHeader } from "@/components/afcb/ui";
 import { useAuth, roleLabel } from "@/lib/use-auth";
 import { Button } from "@/components/ui/button";
 import { seo } from "@/lib/seo";

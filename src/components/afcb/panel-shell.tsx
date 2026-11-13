@@ -32,7 +32,7 @@ export function PanelShell({ label, items, children, preview = false, activeSect
               <SidebarGroupContent>
                 <SidebarMenu>
                   {items.map((it) => (
-                    <SidebarMenuItem key={it.to}>
+                    <SidebarMenuItem key={`${it.to}-${it.section ?? "home"}`}>
                       <SidebarMenuButton asChild isActive={path === it.to && (!it.section || activeSection === it.section)} tooltip={it.title}>
                         <Link to={it.to} search={{ section: it.section, perfil: it.perfil }}>
                           <it.icon className="h-4 w-4" /><span>{it.title}</span>

@@ -6,11 +6,11 @@ import { panelSections } from "@/lib/panel-config";
 import { roleLabel, type AppRole } from "@/lib/roles";
 import { seo } from "@/lib/seo";
 
-type DemoSearch = { perfil?: AppRole; section?: string };
+type DemoSearch = { perfil?: AppRole | undefined; section?: string | undefined };
 export const Route = createFileRoute("/demonstracao")({
   validateSearch: (search: Record<string, unknown>): DemoSearch => ({
-    perfil: search.perfil === "superadmin" || search.perfil === "club_manager" || search.perfil === "player" ? search.perfil : undefined,
-    section: typeof search.section === "string" ? search.section : undefined,
+    perfil: search["perfil"] === "superadmin" || search["perfil"] === "club_manager" || search["perfil"] === "player" ? search["perfil"] : undefined,
+    section: typeof search["section"] === "string" ? search["section"] : undefined,
   }),
   head: () => seo("Prévia dos painéis", "Painéis demonstrativos da AFCB para administrador, gestor do clube e jogador, sem acesso a dados privados."),
   component: Page,
