@@ -28,3 +28,9 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Application rules
+- Store role labels and panel access predicates in the browser-safe roles module; protected database access remains enforced by RLS, not UI visibility.
+- Reuse panel content for authenticated profiles and the public demonstration surface; the latter contains only explicit example data and never private records.
+- Share session queries across consumers and keep the identity-change subscriber in the root; avoid competing per-page auth listeners.
+- Keep chart components outside route modules so route splitting cannot affect reusable visualizations.

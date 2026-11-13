@@ -154,3 +154,6 @@
 }
 @utility animate-rise { animation: rise 0.5s ease-out both; }
 @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.pitch { background: linear-gradient(var(--success), var(--success)) center / 1px 100% no-repeat, repeating-linear-gradient(0deg, color-mix(in oklch, var(--success) 12%, var(--background)) 0 60px, color-mix(in oklch, var(--success) 18%, var(--background)) 60px 120px); }
+@media (prefers-reduced-motion: reduce) { .animate-rise { animation: none; } }
