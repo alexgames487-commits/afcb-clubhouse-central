@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -39,15 +39,16 @@ function Page() {
         <h1 className="mt-6 text-3xl font-bold">{mode === "in" ? "Entrar" : "Criar conta"}</h1>
         <form onSubmit={submit} className="mt-6 space-y-4">
           {mode === "up" && <>
-            <div><Label>Nome esportivo</Label><Input required value={name} onChange={(e) => setName(e.target.value)} /></div>
+            <div><Label htmlFor="sport-name">Nome esportivo</Label><Input id="sport-name" required value={name} onChange={(e) => setName(e.target.value)} /></div>
             <div className="grid grid-cols-2 gap-2">{(["player", "club_manager"] as const).map((t) => <Button key={t} type="button" variant={type === t ? "default" : "outline"} onClick={() => setType(t)}>{t === "player" ? "Jogador" : "Gestor do Clube"}</Button>)}</div>
           </>}
-          <div><Label>E-mail</Label><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-          <div><Label>Senha</Label><Input type="password" required minLength={6} value={pw} onChange={(e) => setPw(e.target.value)} /></div>
+          <div><Label htmlFor="email">E-mail</Label><Input id="email" autoComplete="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
+          <div><Label htmlFor="password">Senha</Label><Input id="password" autoComplete={mode === "in" ? "current-password" : "new-password"} type="password" required minLength={6} value={pw} onChange={(e) => setPw(e.target.value)} /></div>
           <Button className="w-full" disabled={busy}>{mode === "in" ? "Entrar" : "Cadastrar"}</Button>
         </form>
         <Button variant="outline" className="mt-3 w-full" onClick={google}>Continuar com Google</Button>
-        <button className="mt-4 w-full text-sm text-primary" onClick={() => setMode(mode === "in" ? "up" : "in")}>{mode === "in" ? "Não tem conta? Cadastre-se" : "Já tem conta? Entrar"}</button>
+        <Button variant="link" className="mt-4 w-full" onClick={() => setMode(mode === "in" ? "up" : "in")}>{mode === "in" ? "Não tem conta? Cadastre-se" : "Já tem conta? Entrar"}</Button>
+        <Button asChild variant="ghost" className="mt-2 w-full"><Link to="/demonstracao">Conhecer os painéis de exemplo</Link></Button>
       </div>
     </div>
   );

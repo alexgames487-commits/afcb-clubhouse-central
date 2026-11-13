@@ -4,7 +4,7 @@ import { Menu, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Logo } from "./ui";
-import { useAuth } from "@/lib/use-auth";
+import { useAuth, homeForRoles } from "@/lib/use-auth";
 
 export const publicNav = [
   { to: "/sobre", label: "Sobre" },
@@ -19,10 +19,10 @@ export const publicNav = [
 ] as const;
 
 function AccountButton() {
-  const { user, loading } = useAuth();
+  const { user, roles, loading } = useAuth();
   if (loading) return <div className="h-9 w-24" />;
   return user ? (
-    <Button asChild size="sm"><Link to="/painel"><LayoutDashboard className="h-4 w-4" />Meu painel</Link></Button>
+    <Button asChild size="sm"><Link to={homeForRoles(roles)}><LayoutDashboard className="h-4 w-4" />Meu painel</Link></Button>
   ) : (
     <Button asChild size="sm"><Link to="/auth">Entrar</Link></Button>
   );

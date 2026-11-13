@@ -8,9 +8,10 @@ import { Logo } from "./ui";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, roleLabel } from "@/lib/use-auth";
 
-export type NavItem = { title: string; to: string; icon: ComponentType<{ className?: string }> };
+import type { AppRole } from "@/lib/roles";
+export type NavItem = { title: string; to: "/painel" | "/admin" | "/clube" | "/jogador" | "/demonstracao"; section?: string; perfil?: AppRole; icon: ComponentType<{ className?: string }> };
 
-export function PanelShell({ label, items, children }: { label: string; items: NavItem[]; children: ReactNode }) {
+export function PanelShell({ label, items, children, preview = false, activeSection }: { label: string; items: NavItem[]; children: ReactNode; preview?: boolean; activeSection?: string }) {
   const path = useRouterState({ select: (r) => r.location.pathname });
   const { user, roles } = useAuth();
   const navigate = useNavigate();
@@ -31,11 +32,11 @@ export function PanelShell({ label, items, children }: { label: string; items: N
               <SidebarGroupContent>
                 <SidebarMenu>
                   {items.map((it) => (
-                    <SidebarMenuItem key={it.to}>
-                      <SidebarMenuButton asChild isActive={path === it.to} tooltip={it.title}>
-                        <a href={it.to} onClick={(e) => { e.preventDefault(); navigate({ href: it.to }); }}>
+                    <SidebarMenuItem key={`${it.to}-${it.section ?? "home"}`}>
+                      <SidebarMenuButton asChild isActive={path === it.to && (!it.section || activeSection === it.section)} tooltip={it.title}>
+                        <Link to={it.to} search={{ section: it.section, perfil: it.perfil }}>
                           <it.icon className="h-4 w-4" /><span>{it.title}</span>
-                        </a>
+                        </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}
@@ -46,7 +47,7 @@ export function PanelShell({ label, items, children }: { label: string; items: N
           <SidebarFooter>
             <SidebarMenu>
               <SidebarMenuItem><SidebarMenuButton asChild tooltip="Site público"><Link to="/"><Globe className="h-4 w-4" /><span>Site público</span></Link></SidebarMenuButton></SidebarMenuItem>
-              <SidebarMenuItem><SidebarMenuButton onClick={signOut} tooltip="Sair"><LogOut className="h-4 w-4" /><span>Sair</span></SidebarMenuButton></SidebarMenuItem>
+              {!preview && <SidebarMenuItem><SidebarMenuButton onClick={signOut} tooltip="Sair"><LogOut className="h-4 w-4" /><span>Sair</span></SidebarMenuButton></SidebarMenuItem>}
             </SidebarMenu>
           </SidebarFooter>
         </Sidebar>
@@ -55,10 +56,10 @@ export function PanelShell({ label, items, children }: { label: string; items: N
             <SidebarTrigger />
             <div className="flex items-center gap-3 text-right">
               <div className="hidden sm:block">
-                <p className="text-sm font-medium">{user?.email}</p>
-                <p className="text-xs text-muted-foreground">{roles.map((r) => roleLabel[r]).join(" · ") || "Visitante"}</p>
+                <p className="text-sm font-medium">{preview ? "Prévia AFCB" : user?.email}</p>
+                <p className="text-xs text-muted-foreground">{preview ? "Dados de exemplo" : roles.map((r) => roleLabel[r]).join(" · ") || "Visitante"}</p>
               </div>
-              <Button variant="outline" size="sm" onClick={signOut}>Sair</Button>
+              {preview ? <Button asChild variant="outline" size="sm"><Link to="/auth">Entrar</Link></Button> : <Button variant="outline" size="sm" onClick={signOut}>Sair</Button>}
             </div>
           </header>
           <main className="grid-lines flex-1 p-4 md:p-8">{children}</main>
