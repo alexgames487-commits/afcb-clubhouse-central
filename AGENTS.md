@@ -34,3 +34,5 @@ use the editor.
 - Reuse panel content for authenticated profiles and the public demonstration surface; the latter contains only explicit example data and never private records.
 - Share session queries across consumers and keep the identity-change subscriber in the root; avoid competing per-page auth listeners.
 - Keep chart components outside route modules so route splitting cannot affect reusable visualizations.
+- Reuse ClubDirectory and player-detail dialogs across public and demonstration views so identity and example records stay consistent.
+- Render player and transfer lists as compact records on phones and tables on larger screens; close the mobile panel drawer after navigation.
