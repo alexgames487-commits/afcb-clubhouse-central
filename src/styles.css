@@ -78,9 +78,9 @@
 
 :root {
   --radius: 0.5rem;
-  --background: oklch(0.16 0.035 255);
+  --background: oklch(0.17 0.025 255);
   --foreground: oklch(0.96 0.01 240);
-  --card: oklch(0.2 0.04 255);
+  --card: oklch(0.225 0.029 255);
   --card-foreground: oklch(0.96 0.01 240);
   --popover: oklch(0.2 0.04 255);
   --popover-foreground: oklch(0.96 0.01 240);
@@ -89,14 +89,14 @@
   --secondary: oklch(0.25 0.045 255);
   --secondary-foreground: oklch(0.94 0.01 240);
   --muted: oklch(0.24 0.04 255);
-  --muted-foreground: oklch(0.68 0.03 245);
+  --muted-foreground: oklch(0.76 0.019 245);
   --accent: oklch(0.8 0.13 85);
   --accent-foreground: oklch(0.18 0.035 255);
   --gold: oklch(0.8 0.13 85);
   --success: oklch(0.74 0.16 150);
   --destructive: oklch(0.64 0.2 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.32 0.04 250 / 70%);
+  --border: oklch(0.38 0.025 250 / 55%);
   --input: oklch(0.3 0.04 250);
   --ring: oklch(0.78 0.14 215);
   --chart-1: oklch(0.78 0.14 215);
@@ -113,9 +113,9 @@
   --sidebar-border: oklch(0.28 0.04 250 / 70%);
   --sidebar-ring: oklch(0.78 0.14 215);
   --gradient-hero: linear-gradient(180deg, oklch(0.16 0.035 255 / 30%) 0%, oklch(0.16 0.035 255 / 85%) 70%, var(--background) 100%);
-  --gradient-brand: linear-gradient(120deg, var(--primary), var(--gold));
-  --gradient-card: linear-gradient(160deg, oklch(0.22 0.045 255), oklch(0.18 0.035 255));
-  --shadow-glow: 0 0 0 1px oklch(0.78 0.14 215 / 25%), 0 12px 40px -12px oklch(0.78 0.14 215 / 35%);
+  --gradient-brand: linear-gradient(120deg, var(--primary), var(--primary));
+  --gradient-card: linear-gradient(var(--card), var(--card));
+  --shadow-glow: 0 0 0 1px oklch(0.78 0.14 215 / 20%), 0 8px 24px -12px oklch(0.08 0.02 255 / 45%);
 }
 
 @layer base {
@@ -131,7 +131,9 @@
 
 @layer base {
   body { font-family: var(--font-sans); }
-  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: 0.01em; }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: 0; }
+  button, a, input { -webkit-tap-highlight-color: transparent; }
+  ::selection { background: var(--primary); color: var(--primary-foreground); }
 }
 
 @utility bg-hero { background-image: var(--gradient-hero); }
@@ -157,3 +159,15 @@
 
 .pitch { background: linear-gradient(var(--success), var(--success)) center / 1px 100% no-repeat, repeating-linear-gradient(0deg, color-mix(in oklch, var(--success) 12%, var(--background)) 0 60px, color-mix(in oklch, var(--success) 18%, var(--background)) 60px 120px); }
 @media (prefers-reduced-motion: reduce) { .animate-rise { animation: none; } }
+
+.data-table { border-collapse: separate; border-spacing: 0; }
+.data-table th { padding: 12px 10px; background: var(--muted); font-weight: 500; white-space: nowrap; }
+.data-table td { padding: 14px 10px; border-bottom: 1px solid var(--border); }
+.data-table tbody tr:last-child td { border-bottom: 0; }
+.data-table tbody tr:hover { background: color-mix(in oklch, var(--primary) 4%, transparent); }
+.club-crest { clip-path: polygon(8% 0,92% 0,92% 61%,78% 80%,50% 100%,22% 80%,8% 61%); }
+.profile-dialog { width: calc(100% - 24px); max-height: 88svh; overflow-y: auto; }
+.sport-tabs { scrollbar-width: thin; }
+@media (max-width: 639px) {
+  .data-table th, .data-table td { padding: 12px 7px; }
+}
