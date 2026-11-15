@@ -44,11 +44,11 @@ export async function signedCrest(path: string | null) {
   return data.signedUrl;
 }
 
-export async function mapClub(club: Database["public"]["Tables"]["clubs"]["Row"], extra: Partial<ClubDTO> = {}): Promise<ClubDTO> {
+export async function mapClub(club: Database["public"]["Tables"]["clubs"]["Row"], extra: { manager_afcb_id?: string | null | undefined; player_count?: number } = {}): Promise<ClubDTO> {
   return { ...club, ...extra, crest_display_url: await signedCrest(club.crest_url) };
 }
 
-type NewAccount = { afcbId: string; password: string; displayName: string; role: AppRole; contactInfo?: string };
+type NewAccount = { afcbId: string; password: string; displayName: string; role: AppRole; contactInfo?: string | undefined };
 export async function createAuthAccount(input: NewAccount) {
   const { data, error } = await supabaseAdmin.auth.admin.createUser({
     email: input.afcbId,
@@ -75,13 +75,13 @@ type NewClub = {
   name: string;
   shortName: string;
   abbreviation: string;
-  description?: string;
+  description?: string | undefined;
   responsibleName: string;
   contactInfo: string;
   afcbId: string;
   password: string;
   status: "pending" | "approved";
-  actorId?: string | null;
+  actorId?: string | null | undefined;
 };
 
 export async function createClubWithManager(input: NewClub) {
@@ -100,7 +100,7 @@ export async function createClubWithManager(input: NewClub) {
     slug,
     status: input.status,
     reviewed_at: input.status === "approved" ? new Date().toISOString() : null,
-    reviewed_by: input.status === "approved" ? input.actorId : null,
+    reviewed_by: input.status === "approved" ? (input.actorId ?? null) : null,
   }).select().single();
   if (error || !club) {
     await supabaseAdmin.auth.admin.deleteUser(user.id);
