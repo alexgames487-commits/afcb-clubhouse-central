@@ -14,33 +14,129 @@ export type Database = {
   }
   public: {
     Tables: {
+      access_reset_requests: {
+        Row: {
+          afcb_id: string
+          contact_info: string
+          created_at: string
+          handled_at: string | null
+          handled_by: string | null
+          id: string
+          identity_details: string
+          status: string
+        }
+        Insert: {
+          afcb_id: string
+          contact_info: string
+          created_at?: string
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          identity_details: string
+          status?: string
+        }
+        Update: {
+          afcb_id?: string
+          contact_info?: string
+          created_at?: string
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          identity_details?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          details: Json
+          entity_id: string | null
+          entity_type: string
+          id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+        }
+        Relationships: []
+      }
       clubs: {
         Row: {
+          abbreviation: string | null
           coins: number
+          contact_info: string | null
           created_at: string
           crest_url: string | null
+          description: string | null
           id: string
           manager_id: string | null
           name: string
+          platform: string
+          responsible_name: string | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           short_name: string | null
+          slug: string | null
+          status: string
+          submitted_at: string
         }
         Insert: {
+          abbreviation?: string | null
           coins?: number
+          contact_info?: string | null
           created_at?: string
           crest_url?: string | null
+          description?: string | null
           id?: string
           manager_id?: string | null
           name: string
+          platform?: string
+          responsible_name?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           short_name?: string | null
+          slug?: string | null
+          status?: string
+          submitted_at?: string
         }
         Update: {
+          abbreviation?: string | null
           coins?: number
+          contact_info?: string | null
           created_at?: string
           crest_url?: string | null
+          description?: string | null
           id?: string
           manager_id?: string | null
           name?: string
+          platform?: string
+          responsible_name?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           short_name?: string | null
+          slug?: string | null
+          status?: string
+          submitted_at?: string
         }
         Relationships: []
       }
@@ -101,6 +197,24 @@ export type Database = {
         }
         Relationships: []
       }
+      installation_claims: {
+        Row: {
+          created_at: string
+          id: number
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       news: {
         Row: {
           body: string | null
@@ -122,12 +236,55 @@ export type Database = {
         }
         Relationships: []
       }
+      player_club_history: {
+        Row: {
+          club_id: string | null
+          created_at: string
+          ended_at: string | null
+          id: string
+          player_id: string
+          started_at: string
+        }
+        Insert: {
+          club_id?: string | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          player_id: string
+          started_at?: string
+        }
+        Update: {
+          club_id?: string | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          player_id?: string
+          started_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "player_club_history_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_club_history_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       players: {
         Row: {
           club_id: string | null
           created_at: string
           id: string
           market_value: number
+          photo_url: string | null
           platform_id: string | null
           position: string | null
           sport_name: string
@@ -138,6 +295,7 @@ export type Database = {
           created_at?: string
           id?: string
           market_value?: number
+          photo_url?: string | null
           platform_id?: string | null
           position?: string | null
           sport_name: string
@@ -148,6 +306,7 @@ export type Database = {
           created_at?: string
           id?: string
           market_value?: number
+          photo_url?: string | null
           platform_id?: string | null
           position?: string | null
           sport_name?: string
@@ -165,27 +324,94 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_status: string
+          afcb_id: string | null
           avatar_url: string | null
+          contact_info: string | null
           created_at: string
           display_name: string | null
           id: string
           platform_id: string | null
         }
         Insert: {
+          account_status?: string
+          afcb_id?: string | null
           avatar_url?: string | null
+          contact_info?: string | null
           created_at?: string
           display_name?: string | null
           id: string
           platform_id?: string | null
         }
         Update: {
+          account_status?: string
+          afcb_id?: string | null
           avatar_url?: string | null
+          contact_info?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
           platform_id?: string | null
         }
         Relationships: []
+      }
+      transfer_history: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          from_club_id: string | null
+          id: string
+          notes: string | null
+          player_id: string
+          to_club_id: string | null
+          transferred_at: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          from_club_id?: string | null
+          id?: string
+          notes?: string | null
+          player_id: string
+          to_club_id?: string | null
+          transferred_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          from_club_id?: string | null
+          id?: string
+          notes?: string | null
+          player_id?: string
+          to_club_id?: string | null
+          transferred_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transfer_history_from_club_id_fkey"
+            columns: ["from_club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transfer_history_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transfer_history_to_club_id_fkey"
+            columns: ["to_club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -217,6 +443,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_account_active: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "superadmin" | "club_manager" | "player"
