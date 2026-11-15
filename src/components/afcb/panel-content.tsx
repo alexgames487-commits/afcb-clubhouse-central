@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PageHeader, StatCard, Crest, Trend, StatusPill, EmptyState } from "./ui";
 import { PlayersTable, TransfersTable, StandingsTable } from "./tables";
-import { ValueChart } from "./value-chart";
+import { ValueChart, ClubCoinsChart } from "./value-chart";
 import { demoClubs, demoPlayers, demoCompetitions, demoFixtures, demoNews, demoTransfers, coins, clubById, playerById } from "@/lib/demo-data";
 import { getPanelSection } from "@/lib/panel-config";
 import { roleLabel, type AppRole } from "@/lib/roles";
@@ -56,7 +56,7 @@ function PlayerStats() {
 }
 
 function AdminDashboard() {
-  return <div className="space-y-8"><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><StatCard label="Clubes cadastrados" value={demoClubs.length} icon={Shield} /><StatCard label="Jogadores registrados" value={demoPlayers.length} icon={Users} /><StatCard label="Competições ativas" value={demoCompetitions.filter((c) => c.status === "Em andamento").length} icon={Trophy} tone="success" /><StatCard label="Competições encerradas" value={demoCompetitions.filter((c) => c.status === "Encerrada").length} icon={Trophy} tone="gold" /></div><div className="grid gap-4 sm:grid-cols-3"><StatCard label="Janelas BID abertas" value="—" icon={ShoppingCart} hint="Nenhuma janela oficial cadastrada" /><StatCard label="Volume financeiro" value={coins(demoTransfers.reduce((v, t) => v + t.amount, 0))} icon={Coins} tone="gold" /><StatCard label="Solicitações pendentes" value="—" hint="Sem solicitações oficiais" /></div><div className="grid gap-8 xl:grid-cols-[2fr_1fr]"><Section title="Movimentações recentes"><TransfersTable /></Section><Section title="Atividade da federação"><ul className="divide-y divide-border">{demoNews.map((n) => <li key={n.id} className="py-3"><span className="text-xs text-gold">{n.tag} · Exemplo</span><p className="mt-1 text-sm">{n.title}</p></li>)}</ul></Section></div><Section title="Índice do mercado"><ValueChart /></Section></div>;
+  return <div className="space-y-8"><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><StatCard label="Clubes cadastrados" value={demoClubs.length} icon={Shield} /><StatCard label="Jogadores registrados" value={demoPlayers.length} icon={Users} /><StatCard label="Competições ativas" value={demoCompetitions.filter((c) => c.status === "Em andamento").length} icon={Trophy} tone="success" /><StatCard label="Competições encerradas" value={demoCompetitions.filter((c) => c.status === "Encerrada").length} icon={Trophy} tone="gold" /></div><div className="grid gap-4 sm:grid-cols-3"><StatCard label="Janelas BID abertas" value="—" icon={ShoppingCart} hint="Nenhuma janela oficial cadastrada" /><StatCard label="Volume financeiro" value={coins(demoTransfers.reduce((v, t) => v + t.amount, 0))} icon={Coins} tone="gold" /><StatCard label="Solicitações pendentes" value="—" hint="Sem solicitações oficiais" /></div><div className="grid gap-8 xl:grid-cols-[2fr_1fr]"><Section title="Movimentações recentes"><TransfersTable /></Section><Section title="Atividade da federação"><ul className="divide-y divide-border">{demoNews.map((n) => <li key={n.id} className="py-3"><span className="text-xs text-gold">{n.tag} · Exemplo</span><p className="mt-1 text-sm">{n.title}</p></li>)}</ul></Section></div><div className="grid gap-8 xl:grid-cols-2"><Section title="Índice do mercado"><ValueChart /></Section><Section title="Patrimônio × valor do elenco"><ClubCoinsChart /></Section></div></div>;
 }
 
 function ClubDashboard() {
@@ -75,7 +75,7 @@ export function PanelContent({ role, section = "dashboard" }: { role: AppRole; s
   else if (section === "clubes") body = <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{demoClubs.map((c) => <article key={c.id} className="rounded-lg border border-border bg-card p-5"><div className="flex items-center gap-3"><Crest club={c} /><h2 className="text-xl">{c.name}</h2></div><p className="mt-4 text-sm text-gold">{coins(c.coins)}</p><p className="mt-1 text-sm text-muted-foreground">{demoPlayers.filter((p) => p.clubId === c.id).length} jogadores exibidos</p></article>)}</div>;
   else if (section === "competicoes") body = <Competitions />;
   else if (section === "transferencias") body = role === "player" ? <EmptyState title="Nenhuma transferência oficial" text="O histórico individual aparecerá após o registro de uma negociação." /> : <TransfersTable />;
-  else if (section === "financas") body = <Finances club={role === "club_manager"} />;
+  else if (section === "financas") body = <div className="space-y-8"><Finances club={role === "club_manager"} />{role === "superadmin" && <Section title="Comparativo financeiro dos clubes"><ClubCoinsChart /></Section>}</div>;
   else if (section === "escalacao") body = <Lineup />;
   else if (section === "calendario") body = <Fixtures />;
   else if (section === "estatisticas") body = role === "player" ? <PlayerStats /> : <div className="space-y-8"><Section title="Classificação de exemplo"><StandingsTable /></Section><Section title="Estatísticas dos jogadores"><PlayersTable players={role === "club_manager" ? demoPlayers.filter((p) => p.clubId === "c1") : demoPlayers} showValue={false} /></Section></div>;
