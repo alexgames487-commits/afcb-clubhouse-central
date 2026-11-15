@@ -22,6 +22,13 @@
       "when": 1794754727097,
       "tag": "0002_afcb_accounts_and_team_registration",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794754775926,
+      "tag": "0003_afcb_setup_single_claim",
+      "breakpoints": true
     }
   ]
 }
