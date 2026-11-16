@@ -66,7 +66,7 @@ export function AdminClubs() {
 function AdminClubCard({ club }: { club: ClubDTO }) {
   const update = useAction(useServerFn(fx.adminUpdateClub), ["admin-clubs"], "Equipe atualizada.");
   const set = (status: "approved" | "rejected" | "suspended" | "pending", extra: Partial<{ name: string; shortName: string; abbreviation: string; description: string; reviewNotes: string }> = {}) =>
-    update.mutate({ data: { id: club.id, name: club.name, shortName: club.short_name, abbreviation: club.abbreviation ?? "AFC", description: club.description ?? "", status, reviewNotes: club.review_notes ?? undefined, ...extra } });
+    update.mutate({ data: { id: club.id, name: club.name, shortName: club.short_name ?? "", abbreviation: club.abbreviation ?? "AFC", description: club.description ?? "", status, reviewNotes: club.review_notes ?? undefined, ...extra } });
   return <article className="rounded-lg border border-border bg-card p-5">
     <div className="flex items-start gap-3"><LiveCrest club={club} /><div className="min-w-0 flex-1"><h3 className="truncate text-lg font-semibold">{club.name}</h3><p className="text-xs text-muted-foreground">{club.manager_afcb_id ?? "Sem gestor"} · {club.player_count ?? 0} jogadores</p></div><ClubStatus status={club.status} /></div>
     <p className="mt-3 text-sm text-muted-foreground">Responsável: {club.responsible_name} · {club.contact_info}</p>
@@ -76,11 +76,10 @@ function AdminClubCard({ club }: { club: ClubDTO }) {
       {club.status === "approved" && <Button size="sm" variant="outline" disabled={update.isPending} onClick={() => set("suspended")}>Suspender</Button>}
       <Dialog><DialogTrigger asChild><Button size="sm" variant="ghost">Editar</Button></DialogTrigger><DialogContent><DialogHeader><DialogTitle>Editar {club.name}</DialogTitle></DialogHeader>
         <form className="space-y-3" onSubmit={(e) => { const f = fields(e); set(club.status as "approved", { name: f["name"] ?? "", shortName: f["shortName"] ?? "", abbreviation: f["abbreviation"] ?? "", description: f["description"] ?? "", reviewNotes: f["reviewNotes"] ?? "" }); }}>
-          <F id="name" label="Nome" defaultValue={club.name} required /><div className="grid grid-cols-2 gap-3"><F id="shortName" label="Nome curto" defaultValue={club.short_name} required /><F id="abbreviation" label="Sigla" defaultValue={club.abbreviation ?? ""} required /></div>
+          <F id="name" label="Nome" defaultValue={club.name} required /><div className="grid grid-cols-2 gap-3"><F id="shortName" label="Nome curto" defaultValue={club.short_name ?? ""} required /><F id="abbreviation" label="Sigla" defaultValue={club.abbreviation ?? ""} required /></div>
           <div><Label htmlFor="description">Descrição</Label><Textarea id="description" name="description" defaultValue={club.description ?? ""} /></div>
           <div><Label htmlFor="reviewNotes">Observações internas</Label><Textarea id="reviewNotes" name="reviewNotes" defaultValue={club.review_notes ?? ""} /></div>
           <Button className="w-full" disabled={update.isPending}>Salvar</Button></form></DialogContent></Dialog>
-      {club.status === "approved" && <Button size="sm" variant="link" asChild><Link to="/clubes/$slug" params={{ slug: club.slug }}>Página pública</Link></Button>}
     </div>
   </article>;
 }
@@ -135,15 +134,15 @@ export function ManagerClub({ roster = false }: { roster?: boolean }) {
 function ClubProfile({ club, players }: { club: ClubDTO; players: PlayerDTO[] }) {
   const update = useAction(useServerFn(fx.managerUpdateClub), ["manager-club"], "Dados da equipe salvos.");
   const [uploading, setUploading] = useState(false);
-  const save = (crestUrl: string | null, f?: Record<string, string>) => update.mutate({ data: { id: club.id, shortName: f?.["shortName"] ?? club.short_name, abbreviation: f?.["abbreviation"] ?? club.abbreviation ?? "AFC", description: f?.["description"] ?? club.description ?? "", responsibleName: f?.["responsibleName"] ?? club.responsible_name ?? "", contactInfo: f?.["contactInfo"] ?? club.contact_info ?? "", crestUrl } });
-  const upload = async (file: File) => {
-    if (!/^image\/(png|jpeg|webp)$/.test(file.type) || file.size > 2_000_000) return toast.error("Use PNG, JPG ou WEBP de até 2 MB.");
+  const save = (crestUrl: string | null, f?: Record<string, string>) => update.mutate({ data: { id: club.id, shortName: f?.["shortName"] ?? club.short_name ?? "", abbreviation: f?.["abbreviation"] ?? club.abbreviation ?? "AFC", description: f?.["description"] ?? club.description ?? "", responsibleName: f?.["responsibleName"] ?? club.responsible_name ?? "", contactInfo: f?.["contactInfo"] ?? club.contact_info ?? "", crestUrl } });
+  const upload = async (file: File): Promise<void> => {
+    if (!/^image\/(png|jpeg|webp)$/.test(file.type) || file.size > 2_000_000) { toast.error("Use PNG, JPG ou WEBP de até 2 MB."); return; }
     setUploading(true);
     const { data: u } = await supabase.auth.getUser();
     const path = `${u.user?.id}/${crypto.randomUUID()}.${file.type.split("/")[1]}`;
     const { error } = await supabase.storage.from("club-crests").upload(path, file, { upsert: true });
     setUploading(false);
-    if (error) return toast.error("Não foi possível enviar o escudo.");
+    if (error) { toast.error("Não foi possível enviar o escudo."); return; }
     save(path);
   };
   return <div className="space-y-6">
@@ -153,7 +152,7 @@ function ClubProfile({ club, players }: { club: ClubDTO; players: PlayerDTO[] })
     <Panel title="Perfil da equipe">
       <div className="mb-4"><Label htmlFor="crest">Escudo</Label><Input id="crest" type="file" accept="image/png,image/jpeg,image/webp" disabled={uploading} className="mt-1.5" onChange={(e) => { const file = e.target.files?.[0]; if (file) void upload(file); }} /></div>
       <form className="grid gap-3 sm:grid-cols-2" onSubmit={(e) => save(club.crest_url, fields(e))}>
-        <F id="shortName" label="Nome curto" defaultValue={club.short_name} required /><F id="abbreviation" label="Sigla" defaultValue={club.abbreviation ?? ""} required maxLength={5} />
+        <F id="shortName" label="Nome curto" defaultValue={club.short_name ?? ""} required /><F id="abbreviation" label="Sigla" defaultValue={club.abbreviation ?? ""} required maxLength={5} />
         <F id="responsibleName" label="Responsável" defaultValue={club.responsible_name ?? ""} required /><F id="contactInfo" label="Contato" defaultValue={club.contact_info ?? ""} required />
         <div className="sm:col-span-2"><Label htmlFor="description">Descrição</Label><Textarea id="description" name="description" defaultValue={club.description ?? ""} /></div>
         <Button className="sm:col-span-2" disabled={update.isPending}>Salvar alterações</Button></form>
