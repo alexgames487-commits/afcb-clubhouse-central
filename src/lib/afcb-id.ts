@@ -33,7 +33,7 @@ export const clubStatusLabels: Record<string, string> = {
 
 export type ClubDTO = Tables<"clubs"> & {
   crest_display_url: string | null;
-  manager_afcb_id?: string | null;
+  manager_afcb_id?: string | null | undefined;
   player_count?: number;
 };
 export type PlayerDTO = Tables<"players">;
