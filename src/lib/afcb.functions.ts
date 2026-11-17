@@ -33,6 +33,8 @@ const accountInput = z.object({
   clubId: z.string().uuid().optional(),
 });
 
+export const SUPERADMIN_ID = "superadm@afcb.com";
+
 export const getSetupStatus = createServerFn({ method: "GET" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data } = await supabaseAdmin.from("installation_claims").select("id").eq("id", 1).maybeSingle();
@@ -44,6 +46,7 @@ export const setupSuperadmin = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const configuredKey = process.env["AFCB_SETUP_KEY"];
     if (!configuredKey || data.installationKey !== configuredKey) throw new Error("Chave de instalação inválida.");
+    if (data.afcbId !== SUPERADMIN_ID) throw new Error(`A conta principal deve usar o identificador ${SUPERADMIN_ID}.`);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: claim, error: claimError } = await supabaseAdmin.from("installation_claims").insert({ id: 1 }).select().single();
     if (claimError || !claim) throw new Error("A configuração inicial já foi utilizada.");
@@ -98,7 +101,7 @@ export const listAdminClubs = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await requireSuperadmin(context);
     const [{ data: clubs, error }, { data: profiles }, { data: players }] = await Promise.all([
-      context.supabase.from("clubs").select("*").order("submitted_at", { ascending: false }),
+      context.supabase.from("clubs").select("*").is("deleted_at", null).order("submitted_at", { ascending: false }),
       context.supabase.from("profiles").select("id, afcb_id"),
       context.supabase.from("players").select("club_id"),
     ]);
@@ -310,4 +313,21 @@ export const getPlayerAccount = createServerFn({ method: "GET" })
       context.supabase.from("players").select("*").eq("user_id", context.userId).maybeSingle(),
     ]);
     return { profile, player };
+  });
+
+export const adminDeleteClub = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(z.object({ id: z.string().uuid(), confirmName: z.string().trim().min(1), reason: z.string().trim().min(5, "Informe o motivo da exclusão.").max(500) }))
+  .handler(async ({ data, context }) => {
+    await requireSuperadmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: club } = await supabaseAdmin.from("clubs").select("id, name, manager_id, deleted_at").eq("id", data.id).maybeSingle();
+    if (!club || club.deleted_at) throw new Error("Equipe não encontrada.");
+    if (club.name.trim() !== data.confirmName) throw new Error("O nome digitado não confere com o nome da equipe.");
+    // Exclusão lógica: preserva elenco, transferências e histórico de competições.
+    const { error } = await supabaseAdmin.from("clubs").update({ status: "suspended", deleted_at: new Date().toISOString(), deleted_by: context.userId, review_notes: `Excluída: ${data.reason}` }).eq("id", club.id);
+    if (error) throw new Error("Não foi possível excluir a equipe.");
+    if (club.manager_id) await supabaseAdmin.from("profiles").update({ account_status: "suspended" }).eq("id", club.manager_id);
+    await audit(context.userId, "club.deleted", "club", club.id, { name: club.name, reason: data.reason });
+    return { ok: true };
   });

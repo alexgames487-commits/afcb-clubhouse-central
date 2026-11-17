@@ -84,6 +84,8 @@ export type Database = {
           contact_info: string | null
           created_at: string
           crest_url: string | null
+          deleted_at: string | null
+          deleted_by: string | null
           description: string | null
           id: string
           manager_id: string | null
@@ -104,6 +106,8 @@ export type Database = {
           contact_info?: string | null
           created_at?: string
           crest_url?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           description?: string | null
           id?: string
           manager_id?: string | null
@@ -124,6 +128,8 @@ export type Database = {
           contact_info?: string | null
           created_at?: string
           crest_url?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           description?: string | null
           id?: string
           manager_id?: string | null

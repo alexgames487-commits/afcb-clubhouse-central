@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Shield, Users, Clock, UserCog } from "lucide-react";
+import { Shield, Clock, UserCog, CheckCircle2, Ban } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,11 +43,13 @@ export function AdminLiveDashboard() {
   const clubs = useQuery({ queryKey: ["admin-clubs"], queryFn: useServerFn(fx.listAdminClubs) });
   const accounts = useQuery({ queryKey: ["admin-accounts"], queryFn: useServerFn(fx.listAdminAccounts) });
   const pending = clubs.data?.filter((c) => c.status === "pending") ?? [];
-  return <Panel title="Dados oficiais da federação"><div className="grid gap-4 sm:grid-cols-3">
+  const count = (...st: string[]) => clubs.data ? clubs.data.filter((c) => st.includes(c.status)).length : "—";
+  return <Panel title="Dados oficiais da federação"><div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
     <StatCard label="Equipes cadastradas" value={clubs.data?.length ?? "—"} icon={Shield} />
-    <StatCard label="Aguardando aprovação" value={pending.length} icon={Clock} tone="gold" />
-    <StatCard label="Contas ativas" value={accounts.data?.filter((a) => a.account_status === "active").length ?? "—"} icon={Users} tone="success" />
-  </div>{pending.length > 0 && <Button asChild className="mt-4"><Link to="/admin" search={{ section: "clubes" }}>Revisar {pending.length} cadastro(s)</Link></Button>}</Panel>;
+    <StatCard label="Equipes aprovadas" value={count("approved")} icon={CheckCircle2} tone="success" />
+    <StatCard label="Solicitações pendentes" value={count("pending")} icon={Clock} tone="gold" />
+    <StatCard label="Rejeitadas ou suspensas" value={count("rejected", "suspended")} icon={Ban} />
+  </div><p className="mt-3 text-xs text-muted-foreground">Contas ativas: {accounts.data?.filter((a) => a.account_status === "active").length ?? "—"}</p>{pending.length > 0 && <Button asChild className="mt-4"><Link to="/admin" search={{ section: "clubes" }}>Revisar {pending.length} cadastro(s)</Link></Button>}</Panel>;
 }
 
 export function AdminClubs() {
@@ -69,11 +71,18 @@ function AdminClubCard({ club }: { club: ClubDTO }) {
     update.mutate({ data: { id: club.id, name: club.name, shortName: club.short_name ?? "", abbreviation: club.abbreviation ?? "AFC", description: club.description ?? "", status, reviewNotes: club.review_notes ?? undefined, ...extra } });
   return <article className="rounded-lg border border-border bg-card p-5">
     <div className="flex items-start gap-3"><LiveCrest club={club} /><div className="min-w-0 flex-1"><h3 className="truncate text-lg font-semibold">{club.name}</h3><p className="text-xs text-muted-foreground">{club.manager_afcb_id ?? "Sem gestor"} · {club.player_count ?? 0} jogadores</p></div><ClubStatus status={club.status} /></div>
-    <p className="mt-3 text-sm text-muted-foreground">Responsável: {club.responsible_name} · {club.contact_info}</p>
+    <dl className="mt-3 grid gap-1 text-sm text-muted-foreground">
+      <div>Responsável: <span className="text-foreground">{club.responsible_name}</span> · {club.contact_info}</div>
+      <div>Sigla: {club.abbreviation ?? "—"} · Plataforma: Old Gen · Enviada em {new Date(club.submitted_at).toLocaleDateString("pt-BR")}</div>
+      {club.description && <div className="line-clamp-3">{club.description}</div>}
+      {club.review_notes && <div className="text-xs">Observações: {club.review_notes}</div>}
+    </dl>
     <div className="mt-4 flex flex-wrap gap-2">
       {club.status !== "approved" && <Button size="sm" disabled={update.isPending} onClick={() => set("approved")}>Aprovar</Button>}
       {club.status === "pending" && <Button size="sm" variant="outline" disabled={update.isPending} onClick={() => set("rejected")}>Rejeitar</Button>}
       {club.status === "approved" && <Button size="sm" variant="outline" disabled={update.isPending} onClick={() => set("suspended")}>Suspender</Button>}
+      {club.status === "suspended" && <span className="sr-only">Equipe suspensa</span>}
+      <DeleteClub club={club} />
       <Dialog><DialogTrigger asChild><Button size="sm" variant="ghost">Editar</Button></DialogTrigger><DialogContent><DialogHeader><DialogTitle>Editar {club.name}</DialogTitle></DialogHeader>
         <form className="space-y-3" onSubmit={(e) => { const f = fields(e); set(club.status as "approved", { name: f["name"] ?? "", shortName: f["shortName"] ?? "", abbreviation: f["abbreviation"] ?? "", description: f["description"] ?? "", reviewNotes: f["reviewNotes"] ?? "" }); }}>
           <F id="name" label="Nome" defaultValue={club.name} required /><div className="grid grid-cols-2 gap-3"><F id="shortName" label="Nome curto" defaultValue={club.short_name ?? ""} required /><F id="abbreviation" label="Sigla" defaultValue={club.abbreviation ?? ""} required /></div>
@@ -82,6 +91,18 @@ function AdminClubCard({ club }: { club: ClubDTO }) {
           <Button className="w-full" disabled={update.isPending}>Salvar</Button></form></DialogContent></Dialog>
     </div>
   </article>;
+}
+
+function DeleteClub({ club }: { club: ClubDTO }) {
+  const del = useAction(useServerFn(fx.adminDeleteClub), ["admin-clubs", "admin-accounts"], "Equipe excluída. O histórico foi preservado.");
+  const [open, setOpen] = useState(false);
+  const [typed, setTyped] = useState("");
+  return <Dialog open={open} onOpenChange={(o) => { setOpen(o); setTyped(""); }}><DialogTrigger asChild><Button size="sm" variant="ghost" className="text-destructive">Excluir</Button></DialogTrigger><DialogContent><DialogHeader><DialogTitle>Excluir {club.name}?</DialogTitle></DialogHeader>
+    <p className="text-sm text-muted-foreground">A equipe sai do painel e das áreas públicas, e a conta do gestor é suspensa. Elenco, transferências e histórico de competições são preservados.</p>
+    <form className="space-y-3" onSubmit={(e) => { const f = fields(e); del.mutate({ data: { id: club.id, confirmName: f["confirmName"] ?? "", reason: f["reason"] ?? "" } }, { onSuccess: () => setOpen(false) }); }}>
+      <div><Label htmlFor="reason">Motivo</Label><Textarea id="reason" name="reason" required minLength={5} /></div>
+      <F id="confirmName" label={`Digite "${club.name}" para confirmar`} value={typed} onChange={(e) => setTyped(e.target.value)} autoComplete="off" required />
+      <Button variant="destructive" className="w-full" disabled={del.isPending || typed.trim() !== club.name.trim()}>Excluir definitivamente</Button></form></DialogContent></Dialog>;
 }
 
 export function AdminAccounts() {

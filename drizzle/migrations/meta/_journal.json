@@ -29,6 +29,13 @@
       "when": 1794754775926,
       "tag": "0003_afcb_setup_single_claim",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794932670117,
+      "tag": "0004_club_admin_protection",
+      "breakpoints": true
     }
   ]
 }
