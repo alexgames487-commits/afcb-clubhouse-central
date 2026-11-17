@@ -10,8 +10,8 @@
 - [x] Adaptar as páginas ao celular e verificar navegação e controles existentes.
 
 ## Contas e cadastro real de equipes
-- [ ] Substituir login social por identificador exclusivo `@afcb.com` e recuperação administrativa.
-- [ ] Proteger a instalação do primeiro Superadministrador e ampliar permissões no banco.
-- [ ] Implementar cadastro público, escudos, aprovação e perfil público das equipes.
-- [ ] Implementar gestão real de equipes, contas, elenco, senhas, suspensão e auditoria.
+- [x] Substituir login social por identificador exclusivo `@afcb.com` e recuperação administrativa.
+- [x] Proteger a instalação do primeiro Superadministrador e ampliar permissões no banco.
+- [x] Implementar cadastro público, escudos, aprovação e perfil público das equipes.
+- [x] Implementar gestão real de equipes, contas, elenco, senhas, suspensão e auditoria.
 - [ ] Testar os fluxos principais em conta administrativa, gestor e segundo dispositivo; limpar dados de teste.

@@ -13,7 +13,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CalendarioRouteImport } from './routes/calendario'
-import { Route as ClubesRouteImport } from './routes/clubes'
 import { Route as CompeticoesRouteImport } from './routes/competicoes'
 import { Route as DemonstracaoRouteImport } from './routes/demonstracao'
 import { Route as JogadoresRouteImport } from './routes/jogadores'
@@ -26,6 +25,8 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedClubeRouteImport } from './routes/_authenticated/clube'
 import { Route as AuthenticatedJogadorRouteImport } from './routes/_authenticated/jogador'
 import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
+import { Route as ClubesIndexRouteImport } from './routes/clubes.index'
+import { Route as ClubesSlugRouteImport } from './routes/clubes.$slug'
 import { Route as CompeticoesSlugRouteImport } from './routes/competicoes.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -45,11 +46,6 @@ const AuthRoute = AuthRouteImport.update({
 const CalendarioRoute = CalendarioRouteImport.update({
   id: '/calendario',
   path: '/calendario',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ClubesRoute = ClubesRouteImport.update({
-  id: '/clubes',
-  path: '/clubes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CompeticoesRoute = CompeticoesRouteImport.update({
@@ -112,6 +108,16 @@ const AuthenticatedPainelRoute = AuthenticatedPainelRouteImport.update({
   path: '/painel',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ClubesIndexRoute = ClubesIndexRouteImport.update({
+  id: '/clubes/',
+  path: '/clubes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClubesSlugRoute = ClubesSlugRouteImport.update({
+  id: '/clubes/$slug',
+  path: '/clubes/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CompeticoesSlugRoute = CompeticoesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -122,7 +128,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/calendario': typeof CalendarioRoute
-  '/clubes': typeof ClubesRoute
   '/competicoes': typeof CompeticoesRouteWithChildren
   '/demonstracao': typeof DemonstracaoRoute
   '/jogadores': typeof JogadoresRoute
@@ -135,13 +140,14 @@ export interface FileRoutesByFullPath {
   '/clube': typeof AuthenticatedClubeRoute
   '/jogador': typeof AuthenticatedJogadorRoute
   '/painel': typeof AuthenticatedPainelRoute
+  '/clubes/$slug': typeof ClubesSlugRoute
   '/competicoes/$slug': typeof CompeticoesSlugRoute
+  '/clubes/': typeof ClubesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/calendario': typeof CalendarioRoute
-  '/clubes': typeof ClubesRoute
   '/competicoes': typeof CompeticoesRouteWithChildren
   '/demonstracao': typeof DemonstracaoRoute
   '/jogadores': typeof JogadoresRoute
@@ -154,7 +160,9 @@ export interface FileRoutesByTo {
   '/clube': typeof AuthenticatedClubeRoute
   '/jogador': typeof AuthenticatedJogadorRoute
   '/painel': typeof AuthenticatedPainelRoute
+  '/clubes/$slug': typeof ClubesSlugRoute
   '/competicoes/$slug': typeof CompeticoesSlugRoute
+  '/clubes': typeof ClubesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -162,7 +170,6 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/calendario': typeof CalendarioRoute
-  '/clubes': typeof ClubesRoute
   '/competicoes': typeof CompeticoesRouteWithChildren
   '/demonstracao': typeof DemonstracaoRoute
   '/jogadores': typeof JogadoresRoute
@@ -175,7 +182,9 @@ export interface FileRoutesById {
   '/_authenticated/clube': typeof AuthenticatedClubeRoute
   '/_authenticated/jogador': typeof AuthenticatedJogadorRoute
   '/_authenticated/painel': typeof AuthenticatedPainelRoute
+  '/clubes/$slug': typeof ClubesSlugRoute
   '/competicoes/$slug': typeof CompeticoesSlugRoute
+  '/clubes/': typeof ClubesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -183,7 +192,6 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/calendario'
-    | '/clubes'
     | '/competicoes'
     | '/demonstracao'
     | '/jogadores'
@@ -196,13 +204,14 @@ export interface FileRouteTypes {
     | '/clube'
     | '/jogador'
     | '/painel'
+    | '/clubes/$slug'
     | '/competicoes/$slug'
+    | '/clubes/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/calendario'
-    | '/clubes'
     | '/competicoes'
     | '/demonstracao'
     | '/jogadores'
@@ -215,14 +224,15 @@ export interface FileRouteTypes {
     | '/clube'
     | '/jogador'
     | '/painel'
+    | '/clubes/$slug'
     | '/competicoes/$slug'
+    | '/clubes'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/calendario'
-    | '/clubes'
     | '/competicoes'
     | '/demonstracao'
     | '/jogadores'
@@ -235,7 +245,9 @@ export interface FileRouteTypes {
     | '/_authenticated/clube'
     | '/_authenticated/jogador'
     | '/_authenticated/painel'
+    | '/clubes/$slug'
     | '/competicoes/$slug'
+    | '/clubes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -243,7 +255,6 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   CalendarioRoute: typeof CalendarioRoute
-  ClubesRoute: typeof ClubesRoute
   CompeticoesRoute: typeof CompeticoesRouteWithChildren
   DemonstracaoRoute: typeof DemonstracaoRoute
   JogadoresRoute: typeof JogadoresRoute
@@ -252,6 +263,8 @@ export interface RootRouteChildren {
   RankingsRoute: typeof RankingsRoute
   RegulamentosRoute: typeof RegulamentosRoute
   SobreRoute: typeof SobreRoute
+  ClubesSlugRoute: typeof ClubesSlugRoute
+  ClubesIndexRoute: typeof ClubesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -282,13 +295,6 @@ declare module '@tanstack/react-router' {
       path: '/calendario'
       fullPath: '/calendario'
       preLoaderRoute: typeof CalendarioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/clubes': {
-      id: '/clubes'
-      path: '/clubes'
-      fullPath: '/clubes'
-      preLoaderRoute: typeof ClubesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/competicoes': {
@@ -375,6 +381,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPainelRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/clubes/': {
+      id: '/clubes/'
+      path: '/clubes'
+      fullPath: '/clubes/'
+      preLoaderRoute: typeof ClubesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clubes/$slug': {
+      id: '/clubes/$slug'
+      path: '/clubes/$slug'
+      fullPath: '/clubes/$slug'
+      preLoaderRoute: typeof ClubesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/competicoes/$slug': {
       id: '/competicoes/$slug'
       path: '/$slug'
@@ -419,7 +439,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   CalendarioRoute: CalendarioRoute,
-  ClubesRoute: ClubesRoute,
   CompeticoesRoute: CompeticoesRouteWithChildren,
   DemonstracaoRoute: DemonstracaoRoute,
   JogadoresRoute: JogadoresRoute,
@@ -428,6 +447,8 @@ const rootRouteChildren: RootRouteChildren = {
   RankingsRoute: RankingsRoute,
   RegulamentosRoute: RegulamentosRoute,
   SobreRoute: SobreRoute,
+  ClubesSlugRoute: ClubesSlugRoute,
+  ClubesIndexRoute: ClubesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
